@@ -21,8 +21,10 @@ main{min-width:0;display:flex;flex-direction:column;gap:12px}
 button{transition:background .15s,border-color .15s}.tool,.small{border:1px solid var(--line);background:#fff;border-radius:8px;color:#334155;padding:9px 11px;font-size:13px;white-space:nowrap}.tool.active,.small.active{background:#eaf1ff;border-color:#9dbbff;color:var(--blue)}
 .swatch{width:22px;height:22px;border-radius:50%;border:2px solid white;box-shadow:0 0 0 1px #cbd5e1;padding:0}.swatch.active{box-shadow:0 0 0 2px var(--blue)}
 input[type=range]{width:76px;accent-color:var(--blue)}
-.board-wrap{position:relative;flex:1;min-height:560px;background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.board-wrap{position:relative;flex:1;min-height:max(680px,calc(100vh - 170px));background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden}
 #board{display:block;width:100%;height:100%;min-height:560px;touch-action:none;cursor:crosshair}
+.board-wrap.scroll-mode #board{touch-action:pan-y;cursor:grab}
+.board-wrap.scroll-mode #formulaLayer{pointer-events:none}
 #formulaLayer{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .formula{position:absolute;pointer-events:auto;cursor:grab;user-select:none;touch-action:none;padding:8px 10px;border:1px solid transparent;border-radius:8px;background:#ffffffdf;color:#111827;white-space:nowrap;direction:ltr;font-size:25px}
 .formula.selected{border-color:#93b4ff;box-shadow:0 0 0 2px #2563eb18}.del{display:none;position:absolute;top:-10px;left:-10px;border:0;border-radius:50%;background:#ef4444;color:#fff;width:22px;height:22px;padding:0}.formula.selected .del{display:block}
@@ -45,9 +47,9 @@ textarea{width:100%;min-height:94px;resize:vertical;padding:11px;border:1px soli
  .toolbar{gap:6px;padding:8px;overflow:visible}
  .group{padding:0 4px}
  .tool,.small{padding:9px 8px;font-size:12px}
- .board-wrap{flex:none;height:58vh;min-height:360px;max-height:620px}
- #board{height:100%;min-height:0;touch-action:pan-y}
- #formulaLayer{touch-action:pan-y}
+ .board-wrap{flex:none;height:76vh;min-height:520px;max-height:none}
+ #board{height:100%;min-height:0;touch-action:none}
+ #formulaLayer{touch-action:none}
  .layout aside{display:flex;flex-direction:column;gap:10px}
  .layout aside .panel:first-child{grid-column:auto}
  .panel{padding:13px}
@@ -67,7 +69,7 @@ textarea{width:100%;min-height:94px;resize:vertical;padding:11px;border:1px soli
 <div class="layout">
  <main>
   <div class="toolbar">
-   <div class="group"><button id="pen" class="tool active">✎ قلم</button><button id="eraser" class="tool">▱ پاک‌کن</button></div>
+   <div class="group"><button id="pen" class="tool active">✎ قلم</button><button id="eraser" class="tool">▱ پاک‌کن</button><button id="scrollMode" class="tool">☝ اسکرول صفحه</button></div>
    <div class="group"><span class="muted">رنگ</span>
     <button class="swatch active" data-color="#111827" style="background:#111827" aria-label="مشکی"></button>
     <button class="swatch" data-color="#2563eb" style="background:#2563eb" aria-label="آبی"></button>
@@ -117,7 +119,7 @@ textarea{width:100%;min-height:94px;resize:vertical;padding:11px;border:1px soli
 <script>
 (()=>{
 const canvas=document.querySelector('#board'),ctx=canvas.getContext('2d'),wrap=document.querySelector('#boardWrap'),layer=document.querySelector('#formulaLayer');
-let bg='dots',tool='pen',color='#111827',width=3,drawing=false,last=null,current=null,strokes=[],redo=[],selected=null,seq=0,dpr=1;
+let bg='dots',tool='pen',color='#111827',width=3,drawing=false,last=null,current=null,strokes=[],redo=[],selected=null,seq=0,dpr=1,scrollMode=false;
 function background(c,w,h,scale=1){
  c.fillStyle='#fff';c.fillRect(0,0,w,h);c.save();c.scale(scale,scale);
  const W=w/scale,H=h/scale;
@@ -137,12 +139,13 @@ function redraw(){
  ctx.restore()
 }
 function point(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-canvas.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;drawing=true;canvas.setPointerCapture(e.pointerId);last=point(e);current={color:tool==='eraser'?'#fff':color,width:tool==='eraser'?Math.max(18,width*5):width,points:[last]};strokes.push(current);redo=[];redraw()});
+canvas.addEventListener('pointerdown',e=>{if(scrollMode)return;if(e.button!==undefined&&e.button!==0)return;e.preventDefault();drawing=true;canvas.setPointerCapture(e.pointerId);last=point(e);current={color:tool==='eraser'?'#fff':color,width:tool==='eraser'?Math.max(18,width*5):width,points:[last]};strokes.push(current);redo=[];redraw()});
 canvas.addEventListener('pointermove',e=>{if(!drawing||!current)return;const p=point(e);current.points.push(p);last=p;redraw()});
 function endDraw(){drawing=false;current=null;last=null}
 canvas.addEventListener('pointerup',endDraw);canvas.addEventListener('pointercancel',endDraw);
-function setTool(t){tool=t;document.querySelector('#pen').classList.toggle('active',t==='pen');document.querySelector('#eraser').classList.toggle('active',t==='eraser');canvas.style.cursor=t==='pen'?'crosshair':'cell'}
+function setTool(t){tool=t;scrollMode=false;wrap.classList.remove('scroll-mode');document.querySelector('#scrollMode').classList.remove('active');document.querySelector('#pen').classList.toggle('active',t==='pen');document.querySelector('#eraser').classList.toggle('active',t==='eraser');canvas.style.cursor=t==='pen'?'crosshair':'cell'}
 document.querySelector('#pen').onclick=()=>setTool('pen');document.querySelector('#eraser').onclick=()=>setTool('eraser');
+document.querySelector('#scrollMode').onclick=()=>{scrollMode=!scrollMode;wrap.classList.toggle('scroll-mode',scrollMode);document.querySelector('#scrollMode').classList.toggle('active',scrollMode);document.querySelector('#pen').classList.toggle('active',!scrollMode&&tool==='pen');document.querySelector('#eraser').classList.toggle('active',!scrollMode&&tool==='eraser');canvas.style.cursor=scrollMode?'grab':(tool==='pen'?'crosshair':'cell')};
 document.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{color=b.dataset.color;document.querySelectorAll('.swatch').forEach(x=>x.classList.toggle('active',x===b));setTool('pen')});
 document.querySelector('#customColor').oninput=e=>{color=e.target.value;document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));setTool('pen')};
 document.querySelector('#width').oninput=e=>{width=+e.target.value;document.querySelector('#widthLabel').textContent=String(width).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])};
