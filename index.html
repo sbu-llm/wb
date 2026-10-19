@@ -6,7 +6,10 @@
 <title>تخته‌سفید ریاضی</title>
 <style>
 :root{--blue:#2563eb;--ink:#172033;--muted:#64748b;--line:#dbe3ef;--panel:#fff;--bg:#f4f7fb}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,"Segoe UI",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}
+*{box-sizing:border-box}
+html{min-height:100%;overflow-y:auto;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;overflow-x:hidden;overflow-y:auto;background:var(--bg);color:var(--ink);font-family:Tahoma,"Segoe UI",sans-serif;overscroll-behavior-y:auto;-webkit-overflow-scrolling:touch}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
 header{height:78px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
 .brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border:2px solid var(--blue);border-radius:12px;display:grid;place-items:center;color:var(--blue);font-size:26px}
 h1{font-size:20px;margin:0 0 5px}.sub,.muted{font-size:12px;color:var(--muted)}.support{font-size:13px;color:#475569}
@@ -34,7 +37,24 @@ textarea{width:100%;min-height:94px;resize:vertical;padding:11px;border:1px soli
 .preview{height:38px;border:1px solid #e2e8f0;border-radius:5px;margin-bottom:5px;background:#fff}.preview.grid{background-image:linear-gradient(#dbe4ef 1px,transparent 1px),linear-gradient(90deg,#dbe4ef 1px,transparent 1px);background-size:12px 12px}.preview.dots{background-image:radial-gradient(#cbd5e1 1px,transparent 1px);background-size:9px 9px}
 .row-actions{display:flex;gap:8px;margin-top:9px}.row-actions button{flex:1}
 @media(max-width:1000px){.layout{grid-template-columns:1fr}.layout aside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.layout aside .panel:first-child{grid-column:1/-1}}
-@media(max-width:600px){header{height:auto;padding:12px}.support{display:none}.layout{padding:8px;gap:8px}.toolbar{gap:5px;padding:6px}.group{padding:0 4px}.tool,.small{padding:8px;font-size:12px}.board-wrap,#board{min-height:54vh}.layout aside{grid-template-columns:1fr}.layout aside .panel:first-child{grid-column:auto}.formula{font-size:21px}}
+@media(max-width:600px){
+ header{height:auto;min-height:68px;padding:12px;position:relative}
+ .support{display:none}
+ .layout{display:flex;flex-direction:column;padding:8px;gap:10px;min-height:0}
+ main{display:flex;flex-direction:column;gap:8px}
+ .toolbar{gap:6px;padding:8px;overflow:visible}
+ .group{padding:0 4px}
+ .tool,.small{padding:9px 8px;font-size:12px}
+ .board-wrap{flex:none;height:58vh;min-height:360px;max-height:620px}
+ #board{height:100%;min-height:0;touch-action:pan-y}
+ #formulaLayer{touch-action:pan-y}
+ .layout aside{display:flex;flex-direction:column;gap:10px}
+ .layout aside .panel:first-child{grid-column:auto}
+ .panel{padding:13px}
+ .formula{font-size:21px}
+ .quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ body,html{height:auto;overflow-y:auto}
+}
 </style>
 <script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']]},svg:{fontCache:'global'},startup:{typeset:false}};</script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
@@ -63,6 +83,7 @@ textarea{width:100%;min-height:94px;resize:vertical;padding:11px;border:1px soli
   <div class="board-wrap" id="boardWrap"><canvas id="board"></canvas><div id="formulaLayer"></div><div class="status" id="status">آماده نوشتن · 100%</div></div>
  </main>
  <aside>
+  <div class="muted" style="padding:2px 4px">برای دیدن ابزارهای بیشتر، صفحه را با انگشت به پایین بکشید.</div>
   <section class="panel">
    <h2>〈/〉 فرمول LaTeX</h2><p class="muted">فرمول را وارد کنید و روی افزودن بزنید.</p>
    <textarea id="latex" spellcheck="false" placeholder="مثال: \frac{a^2+b^2}{2ab}"></textarea>
