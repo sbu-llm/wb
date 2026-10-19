@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تخته‌سفید ریاضی</title>
+<style>
+:root{--blue:#2563eb;--ink:#172033;--muted:#64748b;--line:#dbe3ef;--panel:#fff;--bg:#f4f7fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,"Segoe UI",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}
+header{height:78px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border:2px solid var(--blue);border-radius:12px;display:grid;place-items:center;color:var(--blue);font-size:26px}
+h1{font-size:20px;margin:0 0 5px}.sub,.muted{font-size:12px;color:var(--muted)}.support{font-size:13px;color:#475569}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:14px;padding:14px;min-height:calc(100vh - 78px)}
+main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.toolbar,.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 8px #1e293b08}
+.toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:9px}
+.group{display:flex;align-items:center;gap:6px;padding:0 8px;border-left:1px solid #e8edf5}.group:last-child{border:0}
+button{transition:background .15s,border-color .15s}.tool,.small{border:1px solid var(--line);background:#fff;border-radius:8px;color:#334155;padding:9px 11px;font-size:13px;white-space:nowrap}.tool.active,.small.active{background:#eaf1ff;border-color:#9dbbff;color:var(--blue)}
+.swatch{width:22px;height:22px;border-radius:50%;border:2px solid white;box-shadow:0 0 0 1px #cbd5e1;padding:0}.swatch.active{box-shadow:0 0 0 2px var(--blue)}
+input[type=range]{width:76px;accent-color:var(--blue)}
+.board-wrap{position:relative;flex:1;min-height:560px;background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+#board{display:block;width:100%;height:100%;min-height:560px;touch-action:none;cursor:crosshair}
+#formulaLayer{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.formula{position:absolute;pointer-events:auto;cursor:grab;user-select:none;touch-action:none;padding:8px 10px;border:1px solid transparent;border-radius:8px;background:#ffffffdf;color:#111827;white-space:nowrap;direction:ltr;font-size:25px}
+.formula.selected{border-color:#93b4ff;box-shadow:0 0 0 2px #2563eb18}.del{display:none;position:absolute;top:-10px;left:-10px;border:0;border-radius:50%;background:#ef4444;color:#fff;width:22px;height:22px;padding:0}.formula.selected .del{display:block}
+.status{position:absolute;bottom:12px;left:12px;background:#ffffffdf;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--muted);pointer-events:none}
+aside{display:flex;flex-direction:column;gap:12px}.panel{padding:14px}.panel h2{font-size:15px;margin:0 0 11px}
+textarea{width:100%;min-height:94px;resize:vertical;padding:11px;border:1px solid #cbd5e1;border-radius:8px;outline:none;direction:ltr;text-align:left}textarea:focus{border-color:#7ca5ff;box-shadow:0 0 0 3px #2563eb12}
+.primary,.export{width:100%;border:0;border-radius:8px;padding:11px;margin-top:9px;background:var(--blue);color:white;font-size:13px;font-weight:bold}.export{background:#16a765}
+.quick-grid,.bg-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.quick{border:1px solid var(--line);background:#fff;border-radius:8px;padding:10px 3px;min-height:68px;color:#334155}.quick b{display:block;font:22px Georgia,serif;margin-bottom:6px;direction:ltr}.quick span{font-size:11px}
+.quick:hover,.small:hover,.tool:hover{border-color:#93b4ff}
+.bg-option{border:1px solid var(--line);border-radius:8px;background:#fff;padding:7px 3px;font-size:12px;color:#475569}.bg-option.active{border:2px solid var(--blue);padding:6px 2px;color:var(--blue)}
+.preview{height:38px;border:1px solid #e2e8f0;border-radius:5px;margin-bottom:5px;background:#fff}.preview.grid{background-image:linear-gradient(#dbe4ef 1px,transparent 1px),linear-gradient(90deg,#dbe4ef 1px,transparent 1px);background-size:12px 12px}.preview.dots{background-image:radial-gradient(#cbd5e1 1px,transparent 1px);background-size:9px 9px}
+.row-actions{display:flex;gap:8px;margin-top:9px}.row-actions button{flex:1}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.layout aside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.layout aside .panel:first-child{grid-column:1/-1}}
+@media(max-width:600px){header{height:auto;padding:12px}.support{display:none}.layout{padding:8px;gap:8px}.toolbar{gap:5px;padding:6px}.group{padding:0 4px}.tool,.small{padding:8px;font-size:12px}.board-wrap,#board{min-height:54vh}.layout aside{grid-template-columns:1fr}.layout aside .panel:first-child{grid-column:auto}.formula{font-size:21px}}
+</style>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']]},svg:{fontCache:'global'},startup:{typeset:false}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+<header>
+ <div class="brand"><div class="logo">∑</div><div><h1>تخته‌سفید ریاضی</h1><div class="sub">بنویسید · حل کنید · ایده‌پردازی کنید</div></div></div>
+ <div class="support">✦ سازگار با لمس موبایل و قلم نوری</div>
+</header>
+<div class="layout">
+ <main>
+  <div class="toolbar">
+   <div class="group"><button id="pen" class="tool active">✎ قلم</button><button id="eraser" class="tool">▱ پاک‌کن</button></div>
+   <div class="group"><span class="muted">رنگ</span>
+    <button class="swatch active" data-color="#111827" style="background:#111827" aria-label="مشکی"></button>
+    <button class="swatch" data-color="#2563eb" style="background:#2563eb" aria-label="آبی"></button>
+    <button class="swatch" data-color="#ef4444" style="background:#ef4444" aria-label="قرمز"></button>
+    <button class="swatch" data-color="#16a34a" style="background:#16a34a" aria-label="سبز"></button>
+    <button class="swatch" data-color="#f59e0b" style="background:#f59e0b" aria-label="نارنجی"></button>
+    <input id="customColor" type="color" value="#7c3aed" title="رنگ دلخواه" style="width:27px;height:28px;border:0;padding:0;background:none">
+   </div>
+   <div class="group"><span class="muted">ضخامت</span><input id="width" type="range" min="1" max="18" value="3"><span id="widthLabel" class="muted">۳</span></div>
+   <div class="group"><button class="small" id="undo">↶ بازگشت</button><button class="small" id="redo">↷ دوباره</button></div>
+   <div class="group"><button class="small" id="clear">پاک‌کردن صفحه</button></div>
+  </div>
+  <div class="board-wrap" id="boardWrap"><canvas id="board"></canvas><div id="formulaLayer"></div><div class="status" id="status">آماده نوشتن · 100%</div></div>
+ </main>
+ <aside>
+  <section class="panel">
+   <h2>〈/〉 فرمول LaTeX</h2><p class="muted">فرمول را وارد کنید و روی افزودن بزنید.</p>
+   <textarea id="latex" spellcheck="false" placeholder="مثال: \frac{a^2+b^2}{2ab}"></textarea>
+   <button class="primary" id="insert">＋ افزودن فرمول</button>
+   <button class="small" id="editSelected" style="width:100%;margin-top:7px">✎ بارگذاری فرمول انتخاب‌شده برای ویرایش</button>
+   <p class="muted">الگو را انتخاب کنید، LaTeX را ویرایش کنید و سپس افزودن فرمول را بزنید. برای ویرایش فرمول روی تخته، ابتدا آن را انتخاب کنید.</p>
+  </section>
+  <section class="panel"><h2>فرمول‌های آماده</h2>
+   <p class="muted">الگوهای مخصوص درس ساختمان داده و تحلیل الگوریتم؛ هر الگو را انتخاب کنید تا کد LaTeX آن قبل از درج قابل ویرایش باشد.</p>
+   <label class="muted" for="formulaCategory">دسته‌بندی فرمول‌ها</label>
+   <select id="formulaCategory" style="width:100%;margin:6px 0 10px;padding:9px;border:1px solid #dbe3ef;border-radius:8px;background:white;color:#334155">
+    <option value="complexity">تحلیل الگوریتم و پیچیدگی</option>
+    <option value="arrays">آرایه، لیست و جدول درهم‌سازی</option>
+    <option value="trees">درخت‌ها و هیپ</option>
+    <option value="graphs">گراف و پیمایش</option>
+    <option value="linear">پشته، صف و لیست پیوندی</option>
+    <option value="recursion">بازگشت و روابط بازگشتی</option>
+    <option value="sorting">جست‌وجو و مرتب‌سازی</option>
+    <option value="sets">مجموعه‌ها و روابط</option>
+   </select>
+   <div class="quick-grid" id="formulaPresets"></div>
+  </section>
+  <section class="panel"><h2>پس‌زمینه</h2><div class="bg-options">
+   <button class="bg-option" data-bg="white"><div class="preview"></div>سفید</button>
+   <button class="bg-option" data-bg="grid"><div class="preview grid"></div>شطرنجی</button>
+   <button class="bg-option active" data-bg="dots"><div class="preview dots"></div>نقطه‌ای</button>
+  </div><div class="row-actions"><button class="small" id="clearFormulas">حذف فرمول‌ها</button></div></section>
+  <section class="panel"><h2>⇩ خروجی تصویر</h2><p class="muted">ذخیره تخته و فرمول‌ها به‌صورت تصویر PNG با وضوح بالا.</p><button class="export" id="export">⇩ دانلود PNG باکیفیت</button></section>
+ </aside>
+</div>
+<script>
+(()=>{
+const canvas=document.querySelector('#board'),ctx=canvas.getContext('2d'),wrap=document.querySelector('#boardWrap'),layer=document.querySelector('#formulaLayer');
+let bg='dots',tool='pen',color='#111827',width=3,drawing=false,last=null,current=null,strokes=[],redo=[],selected=null,seq=0,dpr=1;
+function background(c,w,h,scale=1){
+ c.fillStyle='#fff';c.fillRect(0,0,w,h);c.save();c.scale(scale,scale);
+ const W=w/scale,H=h/scale;
+ if(bg==='grid'){c.strokeStyle='#e3eaf3';c.lineWidth=1;for(let x=0;x<W;x+=24){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}for(let y=0;y<H;y+=24){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}}
+ if(bg==='dots'){c.fillStyle='#dce5f0';for(let x=8;x<W;x+=18)for(let y=8;y<H;y+=18){c.beginPath();c.arc(x,y,0.9,0,Math.PI*2);c.fill()}}
+ c.restore()
+}
+function sizeCanvas(){
+ const r=wrap.getBoundingClientRect();dpr=Math.max(1,window.devicePixelRatio||1);
+ canvas.width=Math.round(r.width*dpr);canvas.height=Math.round(r.height*dpr);
+ canvas.style.width=r.width+'px';canvas.style.height=r.height+'px';redraw();
+}
+function redraw(){
+ ctx.setTransform(1,0,0,1,0,0);background(ctx,canvas.width,canvas.height,dpr);
+ ctx.save();ctx.scale(dpr,dpr);
+ for(const s of strokes){if(!s.points.length)continue;ctx.strokeStyle=s.color;ctx.lineWidth=s.width;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(s.points[0].x,s.points[0].y);for(let i=1;i<s.points.length;i++)ctx.lineTo(s.points[i].x,s.points[i].y);if(s.points.length===1){ctx.lineTo(s.points[0].x+.1,s.points[0].y+.1)}ctx.stroke()}
+ ctx.restore()
+}
+function point(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+canvas.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;drawing=true;canvas.setPointerCapture(e.pointerId);last=point(e);current={color:tool==='eraser'?'#fff':color,width:tool==='eraser'?Math.max(18,width*5):width,points:[last]};strokes.push(current);redo=[];redraw()});
+canvas.addEventListener('pointermove',e=>{if(!drawing||!current)return;const p=point(e);current.points.push(p);last=p;redraw()});
+function endDraw(){drawing=false;current=null;last=null}
+canvas.addEventListener('pointerup',endDraw);canvas.addEventListener('pointercancel',endDraw);
+function setTool(t){tool=t;document.querySelector('#pen').classList.toggle('active',t==='pen');document.querySelector('#eraser').classList.toggle('active',t==='eraser');canvas.style.cursor=t==='pen'?'crosshair':'cell'}
+document.querySelector('#pen').onclick=()=>setTool('pen');document.querySelector('#eraser').onclick=()=>setTool('eraser');
+document.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{color=b.dataset.color;document.querySelectorAll('.swatch').forEach(x=>x.classList.toggle('active',x===b));setTool('pen')});
+document.querySelector('#customColor').oninput=e=>{color=e.target.value;document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));setTool('pen')};
+document.querySelector('#width').oninput=e=>{width=+e.target.value;document.querySelector('#widthLabel').textContent=String(width).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])};
+document.querySelector('#undo').onclick=()=>{if(strokes.length)redo.push(strokes.pop());redraw()};
+document.querySelector('#redo').onclick=()=>{if(redo.length)strokes.push(redo.pop());redraw()};
+document.querySelector('#clear').onclick=()=>{if(confirm('همه نوشته‌های دست‌نویس پاک شوند؟')){strokes=[];redo=[];redraw()}};
+document.querySelectorAll('[data-bg]').forEach(b=>b.onclick=()=>{bg=b.dataset.bg;document.querySelectorAll('[data-bg]').forEach(x=>x.classList.toggle('active',x===b));redraw()});
+function selectFormula(el){document.querySelectorAll('.formula').forEach(x=>x.classList.toggle('selected',x===el));selected=el}
+async function insertFormula(tex){
+ if(!tex.trim())return;
+ if(!window.MathJax||!MathJax.tex2svgPromise){alert('برای نمایش فرمول، اتصال اینترنت و بارگذاری MathJax لازم است.');return}
+ try{
+  const node=await MathJax.tex2svgPromise(tex,{display:false});
+  const el=document.createElement('div');el.className='formula';el.dataset.tex=tex;el.style.left=Math.max(12,wrap.clientWidth/2-70)+'px';el.style.top=Math.max(12,wrap.clientHeight/2-30)+'px';
+  el.appendChild(node);const del=document.createElement('button');del.className='del';del.type='button';del.textContent='×';del.title='حذف فرمول';el.appendChild(del);layer.appendChild(el);selectFormula(el);seq++;
+  let drag=null;
+  el.addEventListener('pointerdown',e=>{if(e.target===del)return;selectFormula(el);drag={x:e.clientX,y:e.clientY,left:parseFloat(el.style.left)||0,top:parseFloat(el.style.top)||0};el.setPointerCapture?.(e.pointerId);el.style.cursor='grabbing';e.stopPropagation()});
+  el.addEventListener('pointermove',e=>{if(!drag)return;el.style.left=Math.max(0,drag.left+e.clientX-drag.x)+'px';el.style.top=Math.max(0,drag.top+e.clientY-drag.y)+'px'});
+  const stop=()=>{drag=null;el.style.cursor='grab'};el.addEventListener('pointerup',stop);el.addEventListener('pointercancel',stop);
+  del.addEventListener('click',e=>{e.stopPropagation();if(selected===el)selected=null;el.remove()});
+  document.querySelector('#latex').value='';
+ }catch(err){alert('فرمول قابل نمایش نیست. لطفاً دستور LaTeX را بررسی کنید.')}
+}
+document.querySelector('#insert').onclick=async()=>{
+ const tex=document.querySelector('#latex').value;
+ if(selected && selected.isConnected && document.querySelector('#editSelected').dataset.editing==='1'){
+  const target=selected;
+  try{
+   if(!window.MathJax||!MathJax.tex2svgPromise){alert('برای نمایش فرمول به اینترنت نیاز است.');return}
+   const node=await MathJax.tex2svgPromise(tex,{display:false});
+   target.replaceChildren(node);target.dataset.tex=tex;
+   const del=document.createElement('button');del.className='del';del.type='button';del.textContent='×';del.title='حذف فرمول';target.appendChild(del);
+   del.addEventListener('click',e=>{e.stopPropagation();if(selected===target)selected=null;target.remove()});
+   document.querySelector('#editSelected').dataset.editing='0';
+   document.querySelector('#editSelected').textContent='✎ بارگذاری فرمول انتخاب‌شده برای ویرایش';
+   document.querySelector('#latex').value='';selectFormula(target);
+  }catch(e){alert('فرمول قابل نمایش نیست؛ کد LaTeX را بررسی کنید.')}
+ } else await insertFormula(tex);
+};
+document.querySelector('#latex').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')document.querySelector('#insert').click()});
+document.querySelector('#editSelected').onclick=()=>{
+ if(!selected||!selected.isConnected){alert('ابتدا روی یکی از فرمول‌های روی تخته کلیک کنید.');return}
+ document.querySelector('#latex').value=selected.dataset.tex||'';
+ document.querySelector('#editSelected').dataset.editing='1';
+ document.querySelector('#editSelected').textContent='✓ حالت ویرایش فعال است';
+ document.querySelector('#latex').focus();
+};
+const presets={
+ complexity:[
+ ['مرتبه زمانی','O(n)',String.raw`T(n)=O(n)`],['کران پایین','Ω(n)',String.raw`T(n)=\Omega(n)`],['کران تنگ','Θ(n)',String.raw`T(n)=\Theta(n)`],
+ ['زمان ثابت','O(1)',String.raw`T(n)=O(1)`],['لگاریتمی','O(log n)',String.raw`T(n)=O(\log n)`],['خطی','O(n)',String.raw`T(n)=O(n)`],
+ ['خطی-لگاریتمی','O(n log n)',String.raw`T(n)=O(n\log n)`],['درجه دو','O(n²)',String.raw`T(n)=O(n^2)`],['نمایی','O(2ⁿ)',String.raw`T(n)=O(2^n)`],
+ ['فضای کمکی','S(n)',String.raw`S(n)=O(n)`],['بهترین حالت','Tbest',String.raw`T_{\mathrm{best}}(n)`],['بدترین حالت','Tworst',String.raw`T_{\mathrm{worst}}(n)`]
+ ],
+ arrays:[
+ ['آرایه','A[i]',String.raw`A[i]`],['طول آرایه','n',String.raw`|A|=n`],['دسترسی به اندیس','O(1)',String.raw`T_{\mathrm{access}}(n)=O(1)`],
+ ['جست‌وجوی خطی','O(n)',String.raw`T_{\mathrm{linear}}(n)=O(n)`],['درهم‌سازی','h(k)',String.raw`h(k)=k\bmod m`],['برخورد هش','h(k₁)=h(k₂)',String.raw`h(k_1)=h(k_2)`],
+ ['لیست پیوندی','node',String.raw`\text{node}=(\text{data},\text{next})`],['درج בתחילת لیست','head',String.raw`\text{new.next}=\text{head}`],['اندیس بازه','i…j',String.raw`A[i\ldots j]`]
+ ],
+ trees:[
+ ['درخت دودویی','T',String.raw`T=(V,E)`],['تعداد گره‌های کامل','2ʰ⁺¹−1',String.raw`N=2^{h+1}-1`],['ارتفاع درخت','h',String.raw`h=\lfloor\log_2 n\rfloor`],
+ ['درخت جست‌وجوی دودویی','BST',String.raw`key(left)<key(root)<key(right)`],['پیمایش پیش‌ترتیب','NLR',String.raw`\text{Preorder}: N\to L\to R`],
+ ['پیمایش میان‌ترتیب','LNR',String.raw`\text{Inorder}: L\to N\to R`],['پیمایش پس‌ترتیب','LRN',String.raw`\text{Postorder}: L\to R\to N`],
+ ['هیپ کامل','h',String.raw`h=O(\log n)`],['فرزند چپ','2i+1',String.raw`left(i)=2i+1`],['فرزند راست','2i+2',String.raw`right(i)=2i+2`]
+ ],
+ graphs:[
+ ['گراف','G=(V,E)',String.raw`G=(V,E)`],['گراف جهت‌دار','→',String.raw`G=(V,E),\ E\subseteq V\times V`],
+ ['درجه رأس','deg(v)',String.raw`\deg(v)`],['دنباله درجات','Σdeg',String.raw`\sum_{v\in V}\deg(v)=2|E|`],
+ ['ماتریس مجاورت','Aᵢⱼ',String.raw`A_{ij}=\begin{cases}1&(v_i,v_j)\in E\\0&\text{otherwise}\end{cases}`],
+ ['لیست مجاورت','Adj(v)',String.raw`\operatorname{Adj}(v)`],['پیمایش BFS','BFS',String.raw`O(|V|+|E|)`],['پیمایش DFS','DFS',String.raw`O(|V|+|E|)`],
+ ['مسیر','v₁…vₖ',String.raw`P=(v_1,v_2,\ldots,v_k)`],['درخت پوشا','|E|',String.raw`|E_{\mathrm{tree}}|=|V|-1`]
+ ],
+ linear:[
+ ['پشته','LIFO',String.raw`\operatorname{push}(S,x)`],['برداشتن از پشته','pop',String.raw`\operatorname{pop}(S)`],['صف','FIFO',String.raw`\operatorname{enqueue}(Q,x)`],
+ ['خروج از صف','dequeue',String.raw`\operatorname{dequeue}(Q)`],['سر صف','front',String.raw`\operatorname{front}(Q)`],['لیست پیوندی','next',String.raw`node.next`],
+ ['لیست دوپیوندی','prev/next',String.raw`node=(prev,data,next)`],['عملیات ثابت','O(1)',String.raw`T_{\mathrm{push}}(n)=O(1)`],['صف حلقوی','mod',String.raw`rear=(rear+1)\bmod n`]
+ ],
+ recursion:[
+ ['رابطه ادغام','T(n)',String.raw`T(n)=2T(n/2)+n`],['فاکتوریل','n!',String.raw`n!=n(n-1)!`],['فیبوناچی','Fₙ',String.raw`F_n=F_{n-1}+F_{n-2}`],
+ ['شرط پایه','T(1)',String.raw`T(1)=\Theta(1)`],['قضیه اصلی','Master',String.raw`T(n)=aT(n/b)+f(n)`],['بازگشت خطی','T(n)',String.raw`T(n)=T(n-1)+1`],
+ ['بازگشت دوشاخه','T(n)',String.raw`T(n)=2T(n-1)+1`],['عمق بازگشت','log n',String.raw`h=\log_2 n`]
+ ],
+ sorting:[
+ ['جست‌وجوی دودویی','O(log n)',String.raw`T(n)=O(\log n)`],['جست‌وجوی خطی','O(n)',String.raw`T(n)=O(n)`],
+ ['مرتب‌سازی ادغامی','O(n log n)',String.raw`T(n)=O(n\log n)`],['مرتب‌سازی سریع متوسط','O(n log n)',String.raw`T_{\mathrm{avg}}(n)=O(n\log n)`],
+ ['مرتب‌سازی سریع بدترین','O(n²)',String.raw`T_{\mathrm{worst}}(n)=O(n^2)`],['مرتب‌سازی حبابی','O(n²)',String.raw`T(n)=O(n^2)`],
+ ['کران مرتب‌سازی مقایسه‌ای','Ω(n log n)',String.raw`T(n)=\Omega(n\log n)`],['رابطه مرتب‌سازی ادغامی','T(n)',String.raw`T(n)=2T(n/2)+\Theta(n)`]
+ ],
+ sets:[
+ ['مجموعه رأس‌ها','V',String.raw`V=\{v_1,v_2,\ldots,v_n\}`],['مجموعه یال‌ها','E',String.raw`E\subseteq V\times V`],['عضویت','∈',String.raw`v\in V`],
+ ['زیرمجموعه','⊆',String.raw`A\subseteq B`],['اجتماع','∪',String.raw`A\cup B`],['اشتراک','∩',String.raw`A\cap B`],
+ ['مجموعه تهی','∅',String.raw`\varnothing`],['تعداد اعضا','|V|',String.raw`|V|=n`],['زوج مرتب','(u,v)',String.raw`(u,v)\in E`]
+ ]
+};
+const presetContainer=document.querySelector('#formulaPresets');
+function renderPresets(){
+ presetContainer.innerHTML='';
+ (presets[document.querySelector('#formulaCategory').value]||[]).forEach(([label,symbol,tex])=>{
+  const b=document.createElement('button');b.className='quick';b.type='button';
+  const sym=document.createElement('b');sym.textContent=symbol;const cap=document.createElement('span');cap.textContent=label;b.append(sym,cap);
+  b.title='قرار دادن الگو در کادر برای ویرایش';
+  b.onclick=()=>{document.querySelector('#latex').value=tex;document.querySelector('#editSelected').dataset.editing='0';document.querySelector('#editSelected').textContent='✎ بارگذاری فرمول انتخاب‌شده برای ویرایش';document.querySelector('#latex').focus()};
+  presetContainer.appendChild(b);
+ });
+}
+document.querySelector('#formulaCategory').onchange=renderPresets;renderPresets();
+document.querySelector('#clearFormulas').onclick=()=>{layer.innerHTML='';selected=null;document.querySelector('#editSelected').dataset.editing='0'};
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('.formula'))selectFormula(null)});
+document.querySelector('#export').onclick=async()=>{
+ const btn=document.querySelector('#export');btn.disabled=true;btn.textContent='در حال آماده‌سازی…';
+ try{
+  const r=wrap.getBoundingClientRect(),scale=3,out=document.createElement('canvas');out.width=Math.round(r.width*scale);out.height=Math.round(r.height*scale);const o=out.getContext('2d');
+  background(o,out.width,out.height,scale);
+  o.drawImage(canvas,0,0,out.width,out.height);
+  const base=wrap.getBoundingClientRect();
+  for(const el of layer.querySelectorAll('.formula')){
+   const er=el.getBoundingClientRect(),x=(er.left-base.left)*scale,y=(er.top-base.top)*scale;
+   const clone=el.cloneNode(true);clone.querySelector('.del')?.remove();
+   const svg=clone.querySelector('svg');if(!svg)continue;
+   const xml=new XMLSerializer().serializeToString(svg),url=URL.createObjectURL(new Blob([xml],{type:'image/svg+xml;charset=utf-8'}));
+   await new Promise(resolve=>{const im=new Image();im.onload=()=>{o.drawImage(im,x,y,er.width*scale,er.height*scale);URL.revokeObjectURL(url);resolve()};im.onerror=()=>{URL.revokeObjectURL(url);resolve()};im.src=url});
+  }
+  const a=document.createElement('a');a.download='math-whiteboard.png';a.href=out.toDataURL('image/png');a.click();
+ }catch(e){alert('ساخت تصویر انجام نشد. دوباره تلاش کنید.')}finally{btn.disabled=false;btn.textContent='⇩ دانلود PNG باکیفیت'}
+};
+if('ResizeObserver'in window)new ResizeObserver(sizeCanvas).observe(wrap);else window.addEventListener('resize',sizeCanvas);
+sizeCanvas();
+})();
+</script>
+</body>
+</html>
